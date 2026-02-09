@@ -2,6 +2,7 @@
 
 import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { formatAmount } from '@/lib/utils';
 
 interface Transaction {
   id: number;
@@ -76,7 +77,8 @@ export default function TransactionHistory({
                 }`}
               >
                 <div className="font-bold text-lg">
-                  {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
+                  {transaction.type === 'income' ? '+' : '-'}₹
+                  {formatAmount(transaction.amount)}
                 </div>
               </div>
               <Button

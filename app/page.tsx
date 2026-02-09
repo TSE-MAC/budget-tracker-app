@@ -37,13 +37,18 @@ export default function Home() {
     }
   }, [transactions, isLoaded]);
 
-  const addTransaction = (type: 'income' | 'expense', amount: number, note: string) => {
+const addTransaction = (
+    type: 'income' | 'expense',
+    amount: number,
+    note: string,
+    date?: Date,
+  ) => {
     const newTransaction: Transaction = {
       id: Date.now(),
       type,
       amount,
       note,
-      date: new Date().toLocaleDateString(),
+      date: (date ?? new Date()).toLocaleDateString(),
     };
     setTransactions([newTransaction, ...transactions]);
   };

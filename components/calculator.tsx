@@ -1,16 +1,36 @@
 'use client';
 
 import { useState } from 'react';
+import { CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+import { Calendar } from '@/components/ui/calendar';
+import { useIsMobile } from '@/components/ui/use-mobile';
 
 interface CalculatorProps {
-  onAddTransaction: (type: 'income' | 'expense', amount: number, note: string) => void;
+  onAddTransaction: (
+    type: 'income' | 'expense',
+    amount: number,
+    note: string,
+    date?: Date,
+  ) => void;
 }
 
 export default function Calculator({ onAddTransaction }: CalculatorProps) {
   const [amount, setAmount] = useState('0');
   const [note, setNote] = useState('');
   const [type, setType] = useState<'income' | 'expense'>('expense');
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [isDateOpen, setIsDateOpen] = useState(false);
+  const isMobile = useIsMobile();
   const currency = '₹';
 
   const handleNumberClick = (num: string) => {
@@ -42,7 +62,7 @@ export default function Calculator({ onAddTransaction }: CalculatorProps) {
   const handleAddTransaction = () => {
     const parsedAmount = parseFloat(amount);
     if (parsedAmount > 0 && note.trim()) {
-      onAddTransaction(type, parsedAmount, note.trim());
+      onAddTransaction(type, parsedAmount, note.trim(), date);
       setAmount('0');
       setNote('');
       setType('expense');
@@ -50,6 +70,14 @@ export default function Calculator({ onAddTransaction }: CalculatorProps) {
   };
 
   const isValidTransaction = parseFloat(amount) > 0 && note.trim().length > 0;
+
+  const formattedDate = date
+    ? date.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    : 'Select date';
 
   return (
     <div className="bg-card rounded-lg shadow-lg p-6 mb-6">
@@ -133,6 +161,77 @@ export default function Calculator({ onAddTransaction }: CalculatorProps) {
         onChange={(e) => setNote(e.target.value)}
         className="w-full px-4 py-3 border border-border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-primary"
       />
+
+      {/* Date Picker */}
+      <div className="mb-4">
+        <label className="block text-xs font-semibold text-muted-foreground mb-2">
+          Date
+        </label>
+        {isMobile ? (
+          <Drawer open={isDateOpen} onOpenChange={setIsDateOpen}>
+            <DrawerTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-between h-11 text-sm"
+              >
+                <span>{formattedDate}</span>
+                <CalendarIcon className="w-4 h-4 opacity-70" />
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Select date</DrawerTitle>
+              </DrawerHeader>
+              <div className="px-4 pb-4">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(selected) => {
+                    setDate(selected ?? undefined);
+                  }}
+                  initialFocus
+                />
+              </div>
+              <DrawerFooter>
+                <Button
+                  type="button"
+                  className="w-full"
+                  onClick={() => setIsDateOpen(false)}
+                >
+                  Done
+                </Button>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+        ) : (
+          <Popover open={isDateOpen} onOpenChange={setIsDateOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-between h-11 text-sm"
+              >
+                <span>{formattedDate}</span>
+                <CalendarIcon className="w-4 h-4 opacity-70" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-0">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={(selected) => {
+                  setDate(selected ?? undefined);
+                  if (selected) {
+                    setIsDateOpen(false);
+                  }
+                }}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        )}
+      </div>
 
       {/* Type Selection */}
       <div className="mb-4">

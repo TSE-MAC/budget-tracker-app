@@ -1,5 +1,7 @@
 'use client';
 
+import { formatAmount } from '@/lib/utils';
+
 interface Transaction {
   id: number;
   type: 'income' | 'expense';
@@ -28,13 +30,13 @@ export default function Summary({ transactions }: SummaryProps) {
       {/* Income */}
       <div className="bg-accent text-accent-foreground rounded-lg p-4 text-center shadow">
         <div className="text-xs font-semibold opacity-90 mb-1">Income</div>
-        <div className="text-2xl font-bold">₹{totalIncome.toFixed(2)}</div>
+        <div className="text-2xl font-bold">₹{formatAmount(totalIncome)}</div>
       </div>
 
       {/* Expenses */}
       <div className="bg-destructive text-destructive-foreground rounded-lg p-4 text-center shadow">
         <div className="text-xs font-semibold opacity-90 mb-1">Expenses</div>
-        <div className="text-2xl font-bold">₹{totalExpense.toFixed(2)}</div>
+        <div className="text-2xl font-bold">₹{formatAmount(totalExpense)}</div>
       </div>
 
       {/* Balance */}
@@ -46,7 +48,7 @@ export default function Summary({ transactions }: SummaryProps) {
         }`}
       >
         <div className="text-xs font-semibold opacity-90 mb-1">Balance</div>
-        <div className="text-2xl font-bold">₹{balance.toFixed(2)}</div>
+        <div className="text-2xl font-bold">₹{formatAmount(balance)}</div>
       </div>
     </div>
   );
