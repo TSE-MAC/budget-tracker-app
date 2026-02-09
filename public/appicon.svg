@@ -1,0 +1,28 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Background -->
+  <rect width="512" height="512" rx="120" fill="#0F172A"></rect>
+
+  <!-- Money (inside wallet) -->
+  <rect x="190" y="160" width="180" height="60" rx="14" fill="#22C55E"></rect>
+  <rect x="180" y="150" width="180" height="60" rx="14" fill="#4ADE80"></rect>
+
+  <!-- INR symbol -->
+  <text x="270" y="188" text-anchor="middle" font-size="26" font-weight="700" font-family="Inter, Arial, sans-serif" fill="#064E3B">
+    ₹
+  </text>
+
+  <!-- Wallet back (folded side) -->
+  <rect x="140" y="220" width="200" height="140" rx="28" fill="#0284C7"></rect>
+
+  <!-- Wallet front -->
+  <rect x="200" y="220" width="200" height="140" rx="28" fill="#38BDF8"></rect>
+
+  <!-- Fold line -->
+  <rect x="250" y="220" width="12" height="140" rx="6" fill="#0F172A" opacity="0.25"></rect>
+
+  <!-- Credit Card -->
+  <rect x="230" y="250" width="140" height="88" rx="14" fill="#E5E7EB"></rect>
+
+  <!-- Card stripe -->
+  <rect x="230" y="266" width="140" height="16" rx="8" fill="#9CA3AF"></rect>
+</svg>
