@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -70,6 +70,68 @@ export default function Calculator({ onAddTransaction }: CalculatorProps) {
   };
 
   const isValidTransaction = parseFloat(amount) > 0 && note.trim().length > 0;
+
+  // Keyboard support: allow typing numbers, decimal, backspace, delete, and enter
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+
+      // Ignore keys when typing in inputs / textareas / contentEditable
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          (target as HTMLElement).isContentEditable)
+      ) {
+        return;
+      }
+
+      const key = event.key;
+
+      // Digits 0–9
+      if (key >= '0' && key <= '9') {
+        event.preventDefault();
+        setAmount((prev) => (prev === '0' ? key : prev + key));
+        return;
+      }
+
+      // Decimal point
+      if (key === '.' || key === ',') {
+        event.preventDefault();
+        setAmount((prev) => (prev.includes('.') ? prev : prev + '.'));
+        return;
+      }
+
+      // Backspace
+      if (key === 'Backspace') {
+        event.preventDefault();
+        setAmount((prev) => (prev.length === 1 ? '0' : prev.slice(0, -1)));
+        return;
+      }
+
+      // Clear on Delete or Escape
+      if (key === 'Delete' || key === 'Escape') {
+        event.preventDefault();
+        setAmount('0');
+        return;
+      }
+
+      // Enter to add transaction (if valid)
+      if (key === 'Enter') {
+        event.preventDefault();
+        const parsedAmount = parseFloat(amount);
+        if (parsedAmount > 0 && note.trim()) {
+          onAddTransaction(type, parsedAmount, note.trim(), date);
+          setAmount('0');
+          setNote('');
+          setType('expense');
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [amount, note, type, date, onAddTransaction]);
 
   const formattedDate = date
     ? date.toLocaleDateString(undefined, {
